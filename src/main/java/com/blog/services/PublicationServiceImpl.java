@@ -5,6 +5,9 @@ import com.blog.entities.Publication;
 import com.blog.exceptions.ResourceNotFoundException;
 import com.blog.repositories.PublicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,8 +33,12 @@ public class PublicationServiceImpl implements PublicationService{
     }
 
     @Override
-    public List<PublicationDTO> getAllPublications() {
-        List<Publication> publicationList = publicationRepository.findAll();
+    public List<PublicationDTO> getAllPublications(int pageNumber, int pageSize) {
+        //1- Pageable
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Publication> publicationsPage = publicationRepository.findAll(pageable);
+        //Obtener contenido del objeto page
+        List<Publication> publicationList = publicationsPage.getContent();
         return publicationList.stream().map( publication -> mapDTO(publication)).collect(Collectors.toList());
     }
 
@@ -55,6 +62,14 @@ public class PublicationServiceImpl implements PublicationService{
         Publication publicationUpdate = publicationRepository.save(publication);
         //retornar objeto de transferencia
         return mapDTO(publicationUpdate);
+    }
+
+    @Override
+    public void deletePublication(Long id) {
+        Publication publication = publicationRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Publication","id",id));
+        //pasar entidad por parametro
+        publicationRepository.delete(publication);
     }
 
 

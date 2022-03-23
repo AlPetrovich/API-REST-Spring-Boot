@@ -17,15 +17,12 @@ public class PublicationController {
     @Autowired
     private PublicationService publicationService;
 
-    @PostMapping
-    public ResponseEntity<PublicationDTO> savePublication(@RequestBody PublicationDTO publicationDTO){
-        PublicationDTO newPublication = publicationService.createPublication(publicationDTO);
-        return new ResponseEntity<>(newPublication, HttpStatus.CREATED);
-    }
-
     @GetMapping("/list")
-    public List<PublicationDTO> listPublications(){
-        return publicationService.getAllPublications();
+    public List<PublicationDTO> listPublications(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "3",required = false) int pageSize
+    ){
+        return publicationService.getAllPublications(pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")
@@ -34,6 +31,13 @@ public class PublicationController {
         return new ResponseEntity<>(publicationDTO, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<PublicationDTO> savePublication(@RequestBody PublicationDTO publicationDTO){
+        PublicationDTO newPublication = publicationService.createPublication(publicationDTO);
+        return new ResponseEntity<>(newPublication, HttpStatus.CREATED);
+    }
+
+
     @PutMapping("/{id}")
     public  ResponseEntity<PublicationDTO> updatePublication(
             @RequestBody PublicationDTO publicationDTO,
@@ -41,6 +45,12 @@ public class PublicationController {
     ){
         PublicationDTO publicationResponse = publicationService.updatePublication(publicationDTO,id);
         return new ResponseEntity<>(publicationResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePublication(@PathVariable("id") Long id){
+        publicationService.deletePublication(id);
+        return new ResponseEntity<>("Publication deleted", HttpStatus.OK);
     }
 
 }
