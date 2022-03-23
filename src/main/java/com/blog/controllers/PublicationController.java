@@ -1,14 +1,13 @@
 package com.blog.controllers;
-
-
 import com.blog.dtos.PublicationDTO;
+import com.blog.dtos.PublicationResponse;
 import com.blog.services.PublicationService;
+import com.blog.util.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/publications")
@@ -18,11 +17,13 @@ public class PublicationController {
     private PublicationService publicationService;
 
     @GetMapping("/list")
-    public List<PublicationDTO> listPublications(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "3",required = false) int pageSize
+    public PublicationResponse listPublications(
+            @RequestParam(value = "pageNumber", defaultValue = AppConstant.NUMBER_PAGE_DEFAULT, required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstant.NUMBER_SIZE_DEFAULT,required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstant.ORDER_BY_DEFAULT, required = false) String orderBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstant.ORDER_DIRECTION_DEFAULT, required = false) String sortDir
     ){
-        return publicationService.getAllPublications(pageNumber, pageSize);
+        return publicationService.getAllPublications(pageNumber, pageSize, orderBy, sortDir);
     }
 
     @GetMapping("/{id}")
