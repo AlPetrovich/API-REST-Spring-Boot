@@ -38,6 +38,23 @@ public class CommentController {
         return new ResponseEntity<>(commentService.createComment(publicationId, commentDTO), HttpStatus.CREATED);
     }
 
+    @PutMapping("publication/{publicationId}/comment/{commentId}")
+    public ResponseEntity<CommentDTO> updateComment(
+            @PathVariable("publicationId") Long publicationId,
+            @PathVariable("commentId") Long commentId,
+            @RequestBody CommentDTO commentDTO
+    ){
+        CommentDTO commentUpdated = commentService.updateComment(publicationId,commentId, commentDTO);
+        return new ResponseEntity<>(commentUpdated, HttpStatus.OK);
+    }
 
+    @DeleteMapping("publication/{publicationId}/comment/{commentId}")
+    public ResponseEntity<String> deleteComment(
+            @PathVariable("publicationId") Long publicationId,
+            @PathVariable("commentId") Long commentId
+    ){
+        commentService.deleteComment(publicationId,commentId);
+        return new ResponseEntity<>("Comment Deleted", HttpStatus.OK);
+    }
 
 }

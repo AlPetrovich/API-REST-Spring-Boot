@@ -59,6 +59,43 @@ public class CommentServiceImpl implements CommentService {
         return mapDTO(comment);
     }
 
+    @Override
+    public CommentDTO updateComment(Long publicationId,Long commentId, CommentDTO commentDTO) {
+        Publication publication = publicationRepo.findById(publicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Publication", "id", publicationId));
+
+        Comment comment = commentRepo.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id",commentId));
+
+        //validation
+        //si el id de la publicacion del comentario no es igual al id de la publicacion
+        if( !comment.getPublication().getId().equals(publication.getId())){
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Comment does not belong to the post");
+        }
+
+        comment.setName(commentDTO.getName());
+        comment.setMail(commentDTO.getMail());
+        comment.setBody(commentDTO.getBody());
+
+        Comment commentUpdated = commentRepo.save(comment);
+        return mapDTO(commentUpdated);
+    }
+
+    @Override
+    public void deleteComment(Long publicationId, Long commentId) {
+        Publication publication = publicationRepo.findById(publicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Publication", "id", publicationId));
+
+        Comment comment = commentRepo.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id",commentId));
+
+        if( !comment.getPublication().getId().equals(publication.getId())){
+            throw new BlogAppException(HttpStatus.BAD_REQUEST, "Comment does not belong to the post");
+        }
+
+        commentRepo.delete(comment);
+    }
+
     //----- CONVERTERS -------
     private CommentDTO mapDTO(Comment comment){
         CommentDTO commentDTO = new CommentDTO();
