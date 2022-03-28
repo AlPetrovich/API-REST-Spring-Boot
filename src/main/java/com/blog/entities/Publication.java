@@ -30,7 +30,7 @@ public class Publication {
     private String content;
 
     //orphanRemoval -> se elimina la clase padre y sus objetos asociados
-    @JsonBackReference
+    @JsonBackReference //-> resolver recursion infinita en relaciones bidireccionales
     @OneToMany(mappedBy = "publication",cascade = CascadeType.ALL, orphanRemoval = true) //private Publication publication;
     private Set<Comment> commentSet = new HashSet<>();
 }
