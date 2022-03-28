@@ -5,6 +5,7 @@ import com.blog.dtos.PublicationResponse;
 import com.blog.entities.Publication;
 import com.blog.exceptions.ResourceNotFoundException;
 import com.blog.repositories.PublicationRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,9 @@ public class PublicationServiceImpl implements PublicationService{
 
     @Autowired
     private PublicationRepository publicationRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public PublicationDTO createPublication(PublicationDTO publicationDTO) {
@@ -86,29 +90,17 @@ public class PublicationServiceImpl implements PublicationService{
     }
 
 
-    //----------------CONVERTERS------------------
+    //----------------MODEL MAPPER-----------------
 
     //Convertir entidad a dto
     private PublicationDTO mapDTO(Publication publication){
-        PublicationDTO publicationDTO = new PublicationDTO();
-        //Establecemos valores de la entidad a mi objeto de transferencia
-        publicationDTO.setId(publication.getId());
-        publicationDTO.setTitle(publication.getTitle());
-        publicationDTO.setDescription(publication.getDescription());
-        publicationDTO.setContent(publication.getContent());
-
+        PublicationDTO publicationDTO = modelMapper.map(publication, PublicationDTO.class);
         return publicationDTO;
     }
 
     //convertir dto a entidad
     private Publication mapEntity(PublicationDTO publicationDTO){
-        Publication publication = new Publication();
-        //Establecemos valores del objeto de transferencia a la entidad
-        publication.setId(publicationDTO.getId());
-        publication.setTitle(publicationDTO.getTitle());
-        publication.setDescription(publicationDTO.getDescription());
-        publication.setContent(publicationDTO.getContent());
-
+        Publication publication = modelMapper.map(publicationDTO, Publication.class);
         return publication;
     }
 }

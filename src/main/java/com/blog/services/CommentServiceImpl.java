@@ -6,6 +6,7 @@ import com.blog.exceptions.BlogAppException;
 import com.blog.exceptions.ResourceNotFoundException;
 import com.blog.repositories.CommentRepository;
 import com.blog.repositories.PublicationRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepo;
     @Autowired
     private PublicationRepository publicationRepo;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public CommentDTO createComment(Long publicationId, CommentDTO commentDTO) {
@@ -96,24 +99,14 @@ public class CommentServiceImpl implements CommentService {
         commentRepo.delete(comment);
     }
 
-    //----- CONVERTERS -------
+    //------------------MODEL MAPPER---------------------
     private CommentDTO mapDTO(Comment comment){
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setId(comment.getId());
-        commentDTO.setName(comment.getName());
-        commentDTO.setMail(comment.getMail());
-        commentDTO.setBody(comment.getBody());
-
+        CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
         return commentDTO;
     }
 
     private Comment mapEntity(CommentDTO commentDTO){
-        Comment comment = new Comment();
-        comment.setId(commentDTO.getId());
-        comment.setName(commentDTO.getName());
-        comment.setMail(commentDTO.getMail());
-        comment.setBody(commentDTO.getBody());
-
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
         return comment;
     }
 }

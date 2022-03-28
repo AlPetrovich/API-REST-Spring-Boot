@@ -1,4 +1,5 @@
 package com.blog.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class Publication {
     private String content;
 
     //orphanRemoval -> se elimina la clase padre y sus objetos asociados
+    @JsonBackReference
     @OneToMany(mappedBy = "publication",cascade = CascadeType.ALL, orphanRemoval = true) //private Publication publication;
     private Set<Comment> commentSet = new HashSet<>();
 }
