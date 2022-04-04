@@ -6,6 +6,7 @@ import com.blog.util.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,6 +35,7 @@ public class PublicationController {
         return new ResponseEntity<>(publicationDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PublicationDTO> savePublication(@Valid @RequestBody PublicationDTO publicationDTO){
         PublicationDTO newPublication = publicationService.createPublication(publicationDTO);
@@ -41,6 +43,7 @@ public class PublicationController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public  ResponseEntity<PublicationDTO> updatePublication(
             @Valid @RequestBody PublicationDTO publicationDTO,
@@ -50,6 +53,7 @@ public class PublicationController {
         return new ResponseEntity<>(publicationResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePublication(@PathVariable("id") Long id){
         publicationService.deletePublication(id);
